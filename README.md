@@ -32,15 +32,14 @@ SpringBoot、Shiro、MybatisPlus、Mysql、Redis、Swagger2、docker、七牛云
 |Xftp|Linux文件上传工具|
 
 ## 项目截图
-![首页](https://raw.githubusercontent.com/Island-404/iBlog/main/img/QQ%E5%9B%BE%E7%89%8720210607212315.png)
+![QQ图片20210607212315.png](http://qtysfkbdh.hn-bkt.clouddn.com/180509dd-dccc-45cd-99fd-e1ffbdd88987)
 
-![文章详情](https://raw.githubusercontent.com/Island-404/iBlog/main/img/QQ%E5%9B%BE%E7%89%8720210607212356.png)
+![QQ图片20210607212356.png](http://qtysfkbdh.hn-bkt.clouddn.com/a90cb4c1-831e-46ff-8e3e-306fd3100f95)
 
-![留言](https://raw.githubusercontent.com/Island-404/iBlog/main/img/QQ%E5%9B%BE%E7%89%8720210607212434.png)
+![QQ图片20210607212608.png](http://qtysfkbdh.hn-bkt.clouddn.com/5978252a-b5d1-47be-bb2e-29820d6cae64)
 
-![文章列表](https://raw.githubusercontent.com/Island-404/iBlog/main/img/QQ%E5%9B%BE%E7%89%8720210607212608.png)
+![QQ图片20210607212612.png](http://qtysfkbdh.hn-bkt.clouddn.com/20baaf0b-0dce-404a-85dc-2a70bbfe1776)
 
-![用户管理](https://raw.githubusercontent.com/Island-404/iBlog/main/img/QQ%E5%9B%BE%E7%89%8720210607212612.png)
 
 ## 项目部署
 1.克隆项目到本地
