@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.island.myblog.mapper.TagsMapper">
+    <select id="getTagsIdByTagName" resultType="integer">
+        SELECT id FROM vueblog2.tags WHERE tagName IN
+        <foreach collection="tagNames" item="tagName" separator="," open="(" close=")">
+            #{tagName}
+        </foreach>
+    </select>
+    <insert id="saveTags">
+        INSERT IGNORE INTO vueblog2.tags(tagName) VALUES
+        <foreach collection="tags" item="tag" separator=",">
+            (#{tag})
+        </foreach>
+    </insert>
+    <insert id="saveTagsArticleTags">
+        INSERT INTO vueblog2.article_tags(aid,tid) VALUES
+        <foreach collection="tids" item="tagId" separator=",">
+            (#{aid},#{tagId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteTagsByAid" parameterType="integer">
+        DELETE FROM vueblog2.article_tags WHERE aid=#{aid}
+    </delete>
+</mapper>

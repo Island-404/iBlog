@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.island.myblog.mapper.CategoryMapper">
+
+
+    <select id="listCategoryDTO" resultType="com.island.myblog.common.dto.CategoryDTO">
+        SELECT
+            c.id,
+            c.cateName,
+            COUNT( 1 ) as article_count
+        FROM
+            vueblog2.category c
+                JOIN vueblog2.article a ON c.id = a.cid
+        WHERE a.state = 1
+        GROUP BY
+            a.cid
+    </select>
+</mapper>

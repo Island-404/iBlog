@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.island.myblog.mapper.CommentsMapper">
+
+    <select id="getCommentsDTOList" resultType="com.island.myblog.common.dto.CommentsDTO">
+        SELECT c.id,
+               c.content commentContent,
+               c.create_time,
+               c.uid userId,
+               u.nickname nickname,
+               u.userface userface
+
+        FROM vueblog2.comments c LEFT JOIN vueblog2.user u ON c.uid = u.id
+
+        WHERE
+        <if test="articleId != null">
+            c.aid = #{articleId}
+        </if>
+        <if test="articleId == null">
+            c.aid is NULL
+        </if>
+        AND c.parentId IS NULL
+        ORDER BY c.create_time DESC
+        LIMIT #{current},10
+
+    </select>
+    <select id="getReplyDTOList" resultType="com.island.myblog.common.dto.ReplyDTO">
+        SELECT c.id,
+               c.parentId,
+               c.uid userId,
+               c.reply_id,
+               c.create_time,
+               c.content commentContent,
+               u.nickname,
+               u.userface,
+               r.nickname AS reply_nickname
+        FROM vueblog2.comments c LEFT JOIN vueblog2.user u on u.id = c.uid
+                                 LEFT JOIN vueblog2.user r ON c.reply_id = r.id
+        WHERE c.parentId IN
+        <foreach collection="commentIdList" item="commentId" open="(" separator="," close=")">
+            #{commentId}
+        </foreach>
+        ORDER BY create_time ASC
+        LIMIT 0 , 3
+    </select>
+    <select id="getReplyCountByCommentId" resultType="com.island.myblog.common.dto.ReplyCountDTO">
+        SELECT
+        parentId as comment_id,
+        count(1) AS reply_count
+        FROM
+        vueblog2.comments
+        WHERE
+        parentId IN
+        (
+        <foreach collection="commentIdList" item="commentId" separator=",">
+            #{commentId}
+        </foreach>
+        )
+        GROUP BY parentId
+    </select>
+    <select id="getReplyDTOListByCommentId" resultType="com.island.myblog.common.dto.ReplyDTO">
+        SELECT c.id,
+        c.parentId,
+        c.uid userId,
+        c.reply_id,
+        c.create_time,
+        c.content commentContent,
+        u.nickname,
+        u.userface,
+        r.nickname AS reply_nickname
+        FROM vueblog2.comments c LEFT JOIN vueblog2.user u on u.id = c.uid
+        LEFT JOIN vueblog2.user r ON c.reply_id = r.id
+        WHERE c.parentId = #{commentId}
+        ORDER BY create_time ASC
+        LIMIT #{current} , 5
+    </select>
+
+</mapper>

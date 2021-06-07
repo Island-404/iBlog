@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.island.myblog.mapper.ArticleMapper">
+    <select id="getArticleById" parameterType="Integer" resultMap="BaseResultMap">
+        SELECT a.*,t.`tagName`,t.`id` AS tid,u.`nickname`,c.`cateName`
+        FROM vueblog2.article a LEFT JOIN vueblog2.article_tags ats ON a.`id`=ats.`aid` LEFT JOIN vueblog2.tags t ON ats.`tid`=t.`id`
+            LEFT JOIN vueblog2.user u ON a.`uid`=u.`id` LEFT JOIN vueblog2.category c ON a.`cid`=c.`id`
+        WHERE a.id=#{aid}
+
+    </select>
+    <select id="listArticleRank" resultType="com.island.myblog.entity.Article">
+        SELECT
+        id,
+        title
+        FROM
+        vueblog2.article
+        WHERE
+        id IN
+        <foreach collection="articleIdList" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ORDER BY field
+        <foreach collection="articleIdList" item="item" open="(id," separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <resultMap id="BaseResultMap" type="com.island.myblog.common.dto.ArticleDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="cid" property="cid"/>
+        <result column="uid" property="uid"/>
+        <result column="createTime" property="createTime"/>
+        <result column="updateTime" property="updateTime"/>
+        <result column="state" property="state"/>
+        <result column="mdContent" property="mdContent"/>
+        <result column="htmlContent" property="htmlContent"/>
+        <result column="summary" property="summary"/>
+        <result column="nickname" property="nickname"/>
+        <result column="cateName" property="cateName"/>
+        <collection property="tags" ofType="com.island.myblog.entity.Tags">
+            <id property="id" column="tid"/>
+            <result property="tagName" column="tagName"/>
+        </collection>
+    </resultMap>
+
+    <select id="listArticles" resultMap="articleHomeResultMap">
+        SELECT a.id,
+               a.title,
+               a.mdContent,
+               a.createTime,
+               a.cid,
+               u.`nickname`,
+               c.`cateName`,
+               t.id tid,
+               t.tagName
+        FROM vueblog2.article a LEFT JOIN vueblog2.article_tags ats ON a.`id`=ats.`aid` LEFT JOIN vueblog2.tags t ON ats.`tid`=t.`id`
+                                LEFT JOIN vueblog2.user u ON a.`uid`=u.`id` LEFT JOIN vueblog2.category c ON a.`cid`=c.`id`
+        WHERE a.state = 1
+        ORDER BY  a.createTime DESC
+        LIMIT #{current} , 10
+
+    </select>
+
+
+    <resultMap id="articleHomeResultMap" type="com.island.myblog.common.dto.ArticleHomeDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="cid" property="cid"/>
+        <result column="createTime" property="createTime"/>
+        <result column="mdContent" property="mdContent"/>
+        <result column="nickname" property="nickname"/>
+        <result column="cateName" property="cateName"/>
+        <collection property="tags" ofType="com.island.myblog.entity.Tags">
+            <id property="id" column="tid"/>
+            <result property="tagName" column="tagName"/>
+        </collection>
+    </resultMap>
+
+    <select id="listArticlesByCondition" resultMap="articleConditionResultMap">
+        SELECT a.id,
+               a.title,
+               a.summary,
+               a.createTime,
+               a.cid,
+               u.`nickname`,
+               c.cateName,
+               t.id tid,
+               t.tagName
+        FROM vueblog2.article a LEFT JOIN vueblog2.article_tags ats ON a.`id`=ats.`aid` LEFT JOIN vueblog2.tags t ON ats.`tid`=t.`id`
+                                LEFT JOIN vueblog2.user u ON a.`uid`=u.`id` LEFT JOIN vueblog2.category c ON a.`cid`=c.`id`
+        <where>
+            <if test="condition.categoryId != null">
+                a.cid = #{condition.categoryId}
+            </if>
+            <if test="condition.tagId != null">
+                t.id = #{condition.tagId}
+            </if>
+        </where>
+        AND a.state = 1
+        ORDER BY a.id
+        LIMIT #{condition.current} , 9
+    </select>
+
+    <resultMap id="articleConditionResultMap" type="com.island.myblog.common.dto.ArticlePreviewDTO">
+        <id column="id" property="id"/>
+        <result column="title" property="articleTitle"/>
+        <result column="cid" property="categoryId"/>
+        <result column="createTime" property="createTime"/>
+        <result column="summary" property="summary"/>
+        <result column="nickname" property="nickname"/>
+        <result column="cateName" property="cateName"/>
+        <collection property="tags" ofType="com.island.myblog.entity.Tags">
+            <id property="id" column="tid"/>
+            <result property="tagName" column="tagName"/>
+        </collection>
+    </resultMap>
+
+    <select id="listArticlesBySearch" resultType="com.island.myblog.common.dto.ArticleSearchDTO">
+        SELECT id,
+               title,
+               summary
+        FROM vueblog2.article
+        WHERE title like CONCAT('%',#{condition.keywords},'%') OR mdContent like CONCAT('%',#{condition.keywords},'%')
+        ORDER BY id DESC
+
+    </select>
+</mapper>
